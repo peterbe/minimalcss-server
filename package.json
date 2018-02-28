@@ -1,0 +1,22 @@
+{
+  "name": "minimalcss-server",
+  "version": "0.0.0",
+  "description": "Node express server to wrap calling minimalcss",
+  "main": "index.js",
+  "repository": "https://github.com/peterbe/minimalcss-server",
+  "author": "Peter Bengtsson",
+  "license": "MIT",
+  "private": false,
+  "scripts": {
+    "server": "node server.js"
+  },
+  "dependencies": {
+    "express": "4.16.2",
+    "generic-pool": "3.4.2",
+    "lru-cache": "4.1.1",
+    "minimalcss": "0.7.2",
+    "morgan": "1.9.0",
+    "performance-now": "2.1.0",
+    "response-time": "2.3.2"
+  }
+}
