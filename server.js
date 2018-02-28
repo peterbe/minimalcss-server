@@ -7,6 +7,7 @@ const puppeteer = require('puppeteer');
 const minimalcss = require('minimalcss');
 const LRU = require('lru-cache');
 const morgan = require('morgan');
+const request = require('request');
 
 const PORT = process.env.PORT || 5000;
 
@@ -47,6 +48,7 @@ app.use(express.json());
 
 app.post('/minimize', async function(req, res) {
   const url = req.body.url;
+  const preflight = !!(req.body.preflight || false);
   res.set('Content-Type', 'application/json');
   const cached = LRUCache.get(url);
   if (cached) {
@@ -65,6 +67,25 @@ app.post('/minimize', async function(req, res) {
       })
     );
   } else {
+    // minimalcss can be quite a beast since it wraps puppeteer,
+    // which wraps chromium. So to check that the URL is at all
+    // accessible you can preflight there.
+    if (preflight) {
+      request(
+        {
+          uri: url,
+          timeout: 5 * 1000
+        },
+        (error, response, body) => {
+          if (error) {
+            console.log(`Error trying to prefly to ${url}:`, error);
+          } else {
+            console.log('Prefly status code:', response && response.statusCode);
+          }
+        }
+      );
+    }
+    console.log(`About to run minimalcss on ${url}`);
     const browser = await browserPool.acquire();
     const t0 = now();
     try {
@@ -77,6 +98,7 @@ app.post('/minimize', async function(req, res) {
           // browser.close();
           browserPool.release(browser);
           const t1 = now();
+          console.log(`Successfully ran minimalcss on ${url}`);
           result._url = url;
           result._took = t1 - t0;
 
