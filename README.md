@@ -1,5 +1,7 @@
 # minimalcss-server
 
+[![NPM version](https://img.shields.io/npm/v/minimalcss-server.svg)](https://www.npmjs.com/package/minimalcss-server)
+
 A Node Express server with a pool of `puppeteer` browsers
 sent into [`minimalcss`](https://github.com/peterbe/minimalcss) that
 analyzes the minimal CSS for a URL.
