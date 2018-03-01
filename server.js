@@ -8,6 +8,8 @@ const minimalcss = require('minimalcss');
 const LRU = require('lru-cache');
 const morgan = require('morgan');
 const request = require('request');
+const GracefulShutdownManager = require('@moebius/http-graceful-shutdown')
+  .GracefulShutdownManager;
 
 const PORT = process.env.PORT || 5000;
 
@@ -19,15 +21,15 @@ const LRUCache = LRU({
 });
 
 const factory = {
-  create: async function() {
+  create: async () => {
     // const browser = await puppeteer.launch();
     const browser = await puppeteer.launch({
       args: ['--no-sandbox', '--disable-setuid-sandbox']
     });
     return browser;
   },
-  destroy: function(puppeteer) {
-    puppeteer.close();
+  destroy: async browser => {
+    await browser.close();
   }
 };
 
@@ -140,8 +142,25 @@ app.get('/', async function(req, res) {
   res.send('Yeah, it works.\n');
 });
 
-app.listen(PORT, function() {
-  console.error(
-    `Node cluster worker ${process.pid}: listening on port ${PORT}`
-  );
-});
+const server = app.listen(PORT, () =>
+  console.log(`Node server listening on port ${PORT}!`)
+);
+
+const shutdownManager = new GracefulShutdownManager(server);
+
+const _shutdown = () => {
+  console.warn('Draining browserPool');
+  try {
+    browserPool.drain().then(() => {
+      console.warn('browserPool drained');
+      browserPool.clear();
+      shutdownManager.terminate(() => {
+        console.log('Server is gracefully terminated');
+      });
+    });
+  } catch (ex) {
+    console.error(ex);
+  }
+};
+process.on('SIGINT', _shutdown);
+process.on('SIGTERM', _shutdown);
