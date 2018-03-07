@@ -106,7 +106,10 @@ app.post('/minimize', async function(req, res) {
           // browser.close();
           browserPool.release(browser);
           const t1 = now();
-          console.log(`Successfully ran minimalcss on ${url}`);
+          const took = t1 - t0;
+          console.log(
+            `Successfully ran minimalcss on ${url} (Took ${took.toFixed(1)}ms)`
+          );
           result._url = url;
           result._took = t1 - t0;
 
