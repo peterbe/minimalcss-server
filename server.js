@@ -33,10 +33,16 @@ const factory = {
   }
 };
 
+const POOL_SIZE_MAX = parseInt(process.env.POOL_SIZE_MAX || 5);
+const POOL_SIZE_MIN = parseInt(process.env.POOL_SIZE_MIN || 2);
+const POOL_MAX_WAITING_CLIENTS = parseInt(
+  process.env.POOL_MAX_WAITING_CLIENTS || 10
+);
+
 const browserPool = genericPool.createPool(factory, {
-  max: 10,
-  min: 2,
-  maxWaitingClients: 50
+  max: POOL_SIZE_MAX,
+  min: POOL_SIZE_MIN,
+  maxWaitingClients: POOL_MAX_WAITING_CLIENTS
 });
 
 const app = express();
@@ -139,7 +145,9 @@ app.post('/minimize', async function(req, res) {
 
 app.get('/', async function(req, res) {
   res.set('Content-Type', 'text/plain');
-  res.send('Yeah, it works.\n');
+  res.send(
+    `Yeah, it works and using minimalcss version ${minimalcss.version}.\n`
+  );
 });
 
 const server = app.listen(PORT, () =>
