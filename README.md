@@ -44,6 +44,26 @@ An LRU cache protects for repeated calls. If there's a cache hit on the LRU
 the exact same output is returned by `result._took === 0.0` and
 `result._cache === 'hit'`.
 
+## Skippable URLs
+
+By default `minimalcss` doesn't skip any URLs. However, there are some good
+defaults that almost everyone should skip. One of them is Google Analytics JS
+and another is Google Fonts.
+
+The reason you should skip Google Fonts is because a URL like
+`https://fonts.googleapis.com/css?family=Lato` is dynamic. It's content is
+different depending the browser. If you let `minimalcss` include its content
+it will be based on the user agent that `minimalcss` is.
+
+If you want to add other patterns, you can pass in `skippable_url_patterns`.
+For example:
+
+```sh
+curl -X POST  -H 'Content-Type: application/json' \
+  -d '{"url": "https://example.com", "skippable_url_patterns": ["ads.example.com"]}' \
+  http://localhost:5000/minimize
+```
+
 ## License
 
 Copyright (c) 2017-2018 [Peter Bengtsson](https://www.peterbe.com).
