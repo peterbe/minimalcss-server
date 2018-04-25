@@ -1,14 +1,14 @@
-const express = require('express');
-const path = require('path');
-const responseTime = require('response-time');
-const genericPool = require('generic-pool');
-const now = require('performance-now');
-const puppeteer = require('puppeteer');
-const minimalcss = require('minimalcss');
-const LRU = require('lru-cache');
-const morgan = require('morgan');
-const request = require('request');
-const GracefulShutdownManager = require('@moebius/http-graceful-shutdown')
+const express = require("express");
+const path = require("path");
+const responseTime = require("response-time");
+const genericPool = require("generic-pool");
+const now = require("performance-now");
+const puppeteer = require("puppeteer");
+const minimalcss = require("minimalcss");
+const LRU = require("lru-cache");
+const morgan = require("morgan");
+const request = require("request");
+const GracefulShutdownManager = require("@moebius/http-graceful-shutdown")
   .GracefulShutdownManager;
 
 const PORT = process.env.PORT || 5000;
@@ -24,7 +24,7 @@ const factory = {
   create: async () => {
     // const browser = await puppeteer.launch();
     const browser = await puppeteer.launch({
-      args: ['--no-sandbox', '--disable-setuid-sandbox']
+      args: ["--no-sandbox", "--disable-setuid-sandbox"]
     });
     return browser;
   },
@@ -54,15 +54,16 @@ app.use(responseTime());
 // app.use(bodyParser());
 app.use(express.json());
 
-app.post('/minimize', async function(req, res) {
+app.post("/minimize", async function(req, res) {
   const url = req.body.url;
   const preflight = !!(req.body.preflight || false);
-  res.set('Content-Type', 'application/json');
+  let skippableUrlPatterns = req.body.skippable_url_patterns || null;
+  res.set("Content-Type", "application/json");
   const cached = LRUCache.get(url);
   if (cached) {
     const full = JSON.parse(cached);
     full.result._took = 0.0;
-    full.result._cache = 'hit';
+    full.result._cache = "hit";
     res.send(JSON.stringify(full));
     return;
   }
@@ -88,11 +89,43 @@ app.post('/minimize', async function(req, res) {
           if (error) {
             console.log(`Error trying to prefly to ${url}:`, error);
           } else {
-            console.log('Prefly status code:', response && response.statusCode);
+            console.log("Prefly status code:", response && response.statusCode);
           }
         }
       );
     }
+
+    // Prep the skippableUrlPatterns array to avoid having to do this
+    // prep-work for each individual request.
+    if (skippableUrlPatterns) {
+      // It's either a string or an array at this point.
+      if (!Array.isArray(skippableUrlPatterns)) {
+        skippableUrlPatterns = [skippableUrlPatterns];
+      }
+    } else {
+      skippableUrlPatterns = [];
+    }
+    // Some good practice ones we can boldly skip.
+    if (!skippableUrlPatterns.includes("google-analyics.com")) {
+      skippableUrlPatterns.push("google-analyics.com");
+    }
+    if (!skippableUrlPatterns.includes("fonts.googleapis.com")) {
+      // See https://github.com/peterbe/minimalcss/issues/164
+      skippableUrlPatterns.push("fonts.googleapis.com");
+    }
+
+    // Return false if the request should be processed.
+    // For example, there might certain URLs we definitely know should
+    // be skipped. By contrast, minimalcss doesn't skip any. Even the ones
+    // that are arguably good practice to skip. This function mixes
+    // supplied patterns AND some good practice ones.
+    const skippable = request => {
+      if (!skippableUrlPatterns.length) {
+        return false;
+      }
+      return skippableUrlPatterns.some(skip => !!request.url().match(skip));
+    };
+
     console.log(`About to run minimalcss on ${url}`);
     const browser = await browserPool.acquire();
     const t0 = now();
@@ -100,7 +133,8 @@ app.post('/minimize', async function(req, res) {
       await minimalcss
         .minimize({
           urls: [url],
-          browser: browser
+          browser: browser,
+          skippable
         })
         .then(result => {
           // browser.close();
@@ -114,7 +148,7 @@ app.post('/minimize', async function(req, res) {
           result._took = t1 - t0;
 
           LRUCache.set(url, JSON.stringify({ result }));
-          result._cache = 'miss';
+          result._cache = "miss";
           res.send(
             JSON.stringify({
               result
@@ -146,8 +180,8 @@ app.post('/minimize', async function(req, res) {
   }
 });
 
-app.get('/', async function(req, res) {
-  res.set('Content-Type', 'text/plain');
+app.get("/", async function(req, res) {
+  res.set("Content-Type", "text/plain");
   res.send(
     `Yeah, it works and using minimalcss version ${minimalcss.version}.\n`
   );
@@ -160,18 +194,18 @@ const server = app.listen(PORT, () =>
 const shutdownManager = new GracefulShutdownManager(server);
 
 const _shutdown = () => {
-  console.warn('Draining browserPool');
+  console.warn("Draining browserPool");
   try {
     browserPool.drain().then(() => {
-      console.warn('browserPool drained');
+      console.warn("browserPool drained");
       browserPool.clear();
       shutdownManager.terminate(() => {
-        console.log('Server is gracefully terminated');
+        console.log("Server is gracefully terminated");
       });
     });
   } catch (ex) {
     console.error(ex);
   }
 };
-process.on('SIGINT', _shutdown);
-process.on('SIGTERM', _shutdown);
+process.on("SIGINT", _shutdown);
+process.on("SIGTERM", _shutdown);
