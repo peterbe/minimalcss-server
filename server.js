@@ -129,10 +129,11 @@ app.post("/minimize", async function(req, res) {
     console.log(`About to run minimalcss on ${url}`);
     const browser = await browserPool.acquire();
     const t0 = now();
+    const urls = [url];
     try {
       await minimalcss
         .minimize({
-          urls: [url],
+          urls,
           browser: browser,
           skippable
         })
@@ -173,7 +174,7 @@ app.post("/minimize", async function(req, res) {
       res.status(500);
       res.send(
         JSON.stringify({
-          error: error.toString()
+          error: ex.toString()
         })
       );
     }
