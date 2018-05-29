@@ -593,16 +593,16 @@ mime@^2.0.3:
   version "2.3.1"
   resolved "https://registry.yarnpkg.com/mime/-/mime-2.3.1.tgz#b1621c54d63b97c47d3cfe7f7215f7d64517c369"
 
-minimalcss@0.7.5:
-  version "0.7.5"
-  resolved "https://registry.yarnpkg.com/minimalcss/-/minimalcss-0.7.5.tgz#e1c43c6ac148404835d5d36a08e1ed60094862bf"
+minimalcss@0.7.6:
+  version "0.7.6"
+  resolved "https://registry.yarnpkg.com/minimalcss/-/minimalcss-0.7.6.tgz#6372db6f5e9dcedef1f41b64cb475d3c5efd1a3e"
   dependencies:
     cheerio "1.0.0-rc.2"
     css-tree "1.0.0-alpha.28"
     csso "~3.5.0"
     filesize "^3.5.11"
     minimist "^1.2.0"
-    puppeteer "^1.2.0"
+    puppeteer "^1.4.0"
 
 minimatch@^3.0.4:
   version "3.0.4"
@@ -721,7 +721,7 @@ punycode@^1.4.1:
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/punycode/-/punycode-1.4.1.tgz#c0d5a63b2718800ad8e1eb0fa5269c84dd41845e"
 
-puppeteer@^1.2.0:
+puppeteer@^1.4.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/puppeteer/-/puppeteer-1.4.0.tgz#437f0f3450d76e437185c0bf06f446e80f184692"
   dependencies:
