@@ -1,12 +1,10 @@
 const express = require("express");
-const path = require("path");
 const responseTime = require("response-time");
 const genericPool = require("generic-pool");
 const now = require("performance-now");
 const puppeteer = require("puppeteer");
 const minimalcss = require("minimalcss");
 const LRU = require("lru-cache");
-const morgan = require("morgan");
 const request = require("request");
 const GracefulShutdownManager = require("@moebius/http-graceful-shutdown")
   .GracefulShutdownManager;
@@ -24,7 +22,11 @@ const factory = {
   create: async () => {
     // const browser = await puppeteer.launch();
     const browser = await puppeteer.launch({
-      args: ["--no-sandbox", "--disable-setuid-sandbox"]
+      args: [
+        "--no-sandbox",
+        "--disable-setuid-sandbox",
+        "--enable-features=NetworkService"
+      ]
     });
     return browser;
   },
