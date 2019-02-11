@@ -11,7 +11,7 @@ const GracefulShutdownManager = require("@moebius/http-graceful-shutdown")
 
 const PORT = process.env.PORT || 5000;
 
-const LRUCache = LRU({
+const LRUCache = new LRU({
   max: 10,
   // length: function (n, key) { return n * 2 + key.length }
   // , dispose: function (key, n) { n.close() }
