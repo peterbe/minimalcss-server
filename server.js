@@ -199,7 +199,7 @@ const shutdownManager = new GracefulShutdownManager(server);
 const _shutdown = () => {
   console.warn("Draining browserPool");
   try {
-    browserPool.drain().then(() => {
+    return browserPool.drain().then(() => {
       console.warn("browserPool drained");
       browserPool.clear();
       shutdownManager.terminate(() => {
@@ -212,3 +212,5 @@ const _shutdown = () => {
 };
 process.on("SIGINT", _shutdown);
 process.on("SIGTERM", _shutdown);
+
+module.exports = { app, _shutdown };

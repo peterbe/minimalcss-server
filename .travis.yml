@@ -1,0 +1,10 @@
+language: node_js
+node_js:
+  stable
+branches:
+  only:
+  - master
+script:
+  - set -e
+  - yarn
+  - yarn test

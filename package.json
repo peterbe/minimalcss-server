@@ -8,7 +8,8 @@
   "license": "MIT",
   "private": false,
   "scripts": {
-    "server": "node server.js"
+    "server": "node server.js",
+    "test": "jest integration.test.js"
   },
   "dependencies": {
     "@moebius/http-graceful-shutdown": "1.1.0",
@@ -22,5 +23,9 @@
   },
   "resolutions": {
     "puppeteer": ">=1.13.0"
+  },
+  "devDependencies": {
+    "jest": "24.8.0",
+    "supertest": "4.0.2"
   }
 }
