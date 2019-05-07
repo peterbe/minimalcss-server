@@ -13,7 +13,7 @@
   "dependencies": {
     "@moebius/http-graceful-shutdown": "1.1.0",
     "express": "4.16.4",
-    "generic-pool": "3.6.1",
+    "generic-pool": "3.7.1",
     "lru-cache": "5.1.1",
     "minimalcss": "0.8.2",
     "performance-now": "2.1.0",
