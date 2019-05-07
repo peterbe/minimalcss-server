@@ -196,7 +196,7 @@ const server = app.listen(PORT, () =>
 
 const shutdownManager = new GracefulShutdownManager(server);
 
-const _shutdown = () => {
+function _shutdown() {
   console.warn("Draining browserPool");
   try {
     return browserPool.drain().then(() => {
@@ -209,7 +209,8 @@ const _shutdown = () => {
   } catch (ex) {
     console.error(ex);
   }
-};
+}
+
 process.on("SIGINT", _shutdown);
 process.on("SIGTERM", _shutdown);
 
