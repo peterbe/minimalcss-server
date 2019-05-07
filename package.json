@@ -19,5 +19,8 @@
     "performance-now": "2.1.0",
     "request": "2.88.0",
     "response-time": "2.3.2"
+  },
+  "resolutions": {
+    "puppeteer": ">=1.13.0"
   }
 }
