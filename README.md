@@ -1,6 +1,7 @@
 # minimalcss-server
 
 [![NPM version](https://img.shields.io/npm/v/minimalcss-server.svg)](https://www.npmjs.com/package/minimalcss-server)
+[![Build Status](https://travis-ci.org/peterbe/minimalcss-server.svg?branch=master)](https://travis-ci.org/peterbe/minimalcss-server)
 
 A Node Express server with a pool of `puppeteer` browsers
 sent into [`minimalcss`](https://github.com/peterbe/minimalcss) that
