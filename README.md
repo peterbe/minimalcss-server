@@ -66,5 +66,5 @@ curl -X POST  -H 'Content-Type: application/json' \
 
 ## License
 
-Copyright (c) 2017-2018 [Peter Bengtsson](https://www.peterbe.com).
+Copyright (c) 2017-2020 [Peter Bengtsson](https://www.peterbe.com).
 See the [LICENSE](/LICENSE) file for license rights and limitations (MIT).
