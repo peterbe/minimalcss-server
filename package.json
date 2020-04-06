@@ -1,6 +1,6 @@
 {
   "name": "minimalcss-server",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "description": "Node express server to wrap calling minimalcss",
   "main": "index.js",
   "repository": "https://github.com/peterbe/minimalcss-server",
