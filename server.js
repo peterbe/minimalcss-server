@@ -5,7 +5,7 @@ const now = require("performance-now");
 const puppeteer = require("puppeteer");
 const minimalcss = require("minimalcss");
 const LRU = require("lru-cache");
-const request = require("request");
+const got = require("got");
 const GracefulShutdownManager = require("@moebius/http-graceful-shutdown")
   .GracefulShutdownManager;
 
@@ -15,7 +15,7 @@ const LRUCache = new LRU({
   max: 10,
   // length: function (n, key) { return n * 2 + key.length }
   // , dispose: function (key, n) { n.close() }
-  maxAge: 1000 * 60 * 60
+  maxAge: 1000 * 60 * 60,
 });
 
 const factory = {
@@ -25,14 +25,14 @@ const factory = {
       args: [
         "--no-sandbox",
         "--disable-setuid-sandbox",
-        "--enable-features=NetworkService"
-      ]
+        "--enable-features=NetworkService",
+      ],
     });
     return browser;
   },
-  destroy: async browser => {
+  destroy: async (browser) => {
     await browser.close();
-  }
+  },
 };
 
 const POOL_SIZE_MAX = parseInt(process.env.POOL_SIZE_MAX || 5);
@@ -44,7 +44,7 @@ const POOL_MAX_WAITING_CLIENTS = parseInt(
 const browserPool = genericPool.createPool(factory, {
   max: POOL_SIZE_MAX,
   min: POOL_SIZE_MIN,
-  maxWaitingClients: POOL_MAX_WAITING_CLIENTS
+  maxWaitingClients: POOL_MAX_WAITING_CLIENTS,
 });
 
 const app = express();
@@ -56,7 +56,7 @@ app.use(responseTime());
 // app.use(bodyParser());
 app.use(express.json());
 
-app.post("/minimize", async function(req, res) {
+app.post("/minimize", async function (req, res) {
   const url = req.body.url;
   const preflight = !!(req.body.preflight || false);
   let skippableUrlPatterns = req.body.skippable_url_patterns || null;
@@ -74,7 +74,7 @@ app.post("/minimize", async function(req, res) {
     res.status(400);
     res.send(
       JSON.stringify({
-        error: "missing 'url' in JSON body"
+        error: "missing 'url' in JSON body",
       })
     );
   } else {
@@ -82,19 +82,14 @@ app.post("/minimize", async function(req, res) {
     // which wraps chromium. So to check that the URL is at all
     // accessible you can preflight there.
     if (preflight) {
-      request(
-        {
-          uri: url,
-          timeout: 5 * 1000
-        },
-        (error, response, body) => {
-          if (error) {
-            console.log(`Error trying to prefly to ${url}:`, error);
-          } else {
-            console.log("Prefly status code:", response && response.statusCode);
-          }
-        }
-      );
+      try {
+        const response = await got(url, {
+          timeout: 5 * 1000,
+        });
+        console.log(`Preflight status code: ${response.statusCode}`);
+      } catch (ex) {
+        console.log(`Error trying to prefly to ${url}:`, ex.toString());
+      }
     }
 
     // Prep the skippableUrlPatterns array to avoid having to do this
@@ -121,11 +116,11 @@ app.post("/minimize", async function(req, res) {
     // be skipped. By contrast, minimalcss doesn't skip any. Even the ones
     // that are arguably good practice to skip. This function mixes
     // supplied patterns AND some good practice ones.
-    const skippable = request => {
+    const skippable = (request) => {
       if (!skippableUrlPatterns.length) {
         return false;
       }
-      return skippableUrlPatterns.some(skip => !!request.url().match(skip));
+      return skippableUrlPatterns.some((skip) => !!request.url().match(skip));
     };
 
     console.log(`About to run minimalcss on ${url}`);
@@ -137,9 +132,9 @@ app.post("/minimize", async function(req, res) {
         .minimize({
           urls,
           browser: browser,
-          skippable
+          skippable,
         })
-        .then(result => {
+        .then((result) => {
           // browser.close();
           browserPool.release(browser);
           const t1 = now();
@@ -154,11 +149,11 @@ app.post("/minimize", async function(req, res) {
           result._cache = "miss";
           res.send(
             JSON.stringify({
-              result
+              result,
             })
           );
         })
-        .catch(error => {
+        .catch((error) => {
           // browser.close();
           // await browserPool.release(browser);
           browserPool.release(browser);
@@ -166,7 +161,7 @@ app.post("/minimize", async function(req, res) {
           res.status(500);
           res.send(
             JSON.stringify({
-              error: error.toString()
+              error: error.toString(),
             })
           );
         });
@@ -176,14 +171,14 @@ app.post("/minimize", async function(req, res) {
       res.status(500);
       res.send(
         JSON.stringify({
-          error: ex.toString()
+          error: ex.toString(),
         })
       );
     }
   }
 });
 
-app.get("/", async function(req, res) {
+app.get("/", async function (req, res) {
   res.set("Content-Type", "text/plain");
   res.send(
     `Yeah, it works and using minimalcss version ${minimalcss.version}.\n`

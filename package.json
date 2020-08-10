@@ -15,10 +15,10 @@
     "@moebius/http-graceful-shutdown": "1.1.0",
     "express": "4.17.1",
     "generic-pool": "3.7.1",
+    "got": "11.3.0",
     "lru-cache": "5.1.1",
     "minimalcss": "0.10.0",
     "performance-now": "2.1.0",
-    "request": "2.88.2",
     "response-time": "2.3.2"
   },
   "resolutions": {
