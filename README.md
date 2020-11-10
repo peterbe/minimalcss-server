@@ -1,7 +1,7 @@
 # minimalcss-server
 
 [![NPM version](https://img.shields.io/npm/v/minimalcss-server.svg)](https://www.npmjs.com/package/minimalcss-server)
-[![Build Status](https://travis-ci.org/peterbe/minimalcss-server.svg?branch=master)](https://travis-ci.org/peterbe/minimalcss-server)
+![Node.js CI](https://github.com/peterbe/minimalcss-server/workflows/Node.js%20CI/badge.svg)
 
 A Node Express server with a pool of `puppeteer` browsers
 sent into [`minimalcss`](https://github.com/peterbe/minimalcss) that
@@ -10,7 +10,7 @@ analyzes the minimal CSS for a URL.
 To run:
 
 ```sh
-$ node server.js
+node server.js
 ```
 
 To test:
