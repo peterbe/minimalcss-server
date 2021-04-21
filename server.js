@@ -126,55 +126,42 @@ app.post("/minimize", async function (req, res) {
     console.log(`About to run minimalcss on ${url}`);
     const browser = await browserPool.acquire();
     const t0 = now();
-    const urls = [url];
-    try {
-      await minimalcss
-        .minimize({
-          urls,
-          browser: browser,
-          skippable,
-        })
-        .then((result) => {
-          // browser.close();
-          browserPool.release(browser);
-          const t1 = now();
-          const took = t1 - t0;
-          console.log(
-            `Successfully ran minimalcss on ${url} (Took ${took.toFixed(1)}ms)`
-          );
-          result._url = url;
-          result._took = t1 - t0;
+    await minimalcss
+      .minimize({
+        url,
+        browser,
+        skippable,
+        withoutjavascript: false, // XXX this should be the default!
+      })
+      .then((result) => {
+        const t1 = now();
+        const took = t1 - t0;
+        console.log(
+          `Successfully ran minimalcss on ${url} (Took ${took.toFixed(1)}ms)`
+        );
+        result._url = url;
+        result._took = t1 - t0;
 
-          LRUCache.set(url, JSON.stringify({ result }));
-          result._cache = "miss";
-          res.send(
-            JSON.stringify({
-              result,
-            })
-          );
-        })
-        .catch((error) => {
-          // browser.close();
-          // await browserPool.release(browser);
-          browserPool.release(browser);
-          console.error(`Failed the minimize CSS: ${error}`);
-          res.status(500);
-          res.send(
-            JSON.stringify({
-              error: error.toString(),
-            })
-          );
-        });
-    } catch (ex) {
-      browserPool.release(browser);
-      console.error(ex);
-      res.status(500);
-      res.send(
-        JSON.stringify({
-          error: ex.toString(),
-        })
-      );
-    }
+        LRUCache.set(url, JSON.stringify({ result }));
+        result._cache = "miss";
+        res.send(
+          JSON.stringify({
+            result,
+          })
+        );
+      })
+      .catch((error) => {
+        console.error(`Failed the minimize CSS: ${error}`);
+        res.status(500);
+        res.send(
+          JSON.stringify({
+            error: error.toString(),
+          })
+        );
+      })
+      .finally(() => {
+        browserPool.release(browser);
+      });
   }
 });
 
