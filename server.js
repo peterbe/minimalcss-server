@@ -143,14 +143,13 @@ app.post("/minimize", async function (req, res) {
         );
         result._url = url;
         result._took = t1 - t0;
-
-        LRUCache.set(url, JSON.stringify({ result }));
-        result._cache = "miss";
         if (includePrettier) {
           result._prettier = prettier.format(result.finalCss, {
             parser: "css",
           });
         }
+        LRUCache.set(url, JSON.stringify({ result }));
+        result._cache = "miss";
         res.json({ result });
       })
       .catch((error) => {
