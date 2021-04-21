@@ -65,6 +65,12 @@ curl -X POST  -H 'Content-Type: application/json' \
   http://localhost:5000/minimize
 ```
 
+## Prettier
+
+If you include `"prettier": true` in your JSON body POST, the returning
+JSON will have one additional key called `_prettier` which is the result
+of running `prettier.format(result.finalCss, {parser: "css"})`.
+
 ## License
 
 Copyright (c) 2017-2020 [Peter Bengtsson](https://www.peterbe.com).

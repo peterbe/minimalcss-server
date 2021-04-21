@@ -4,6 +4,7 @@ const genericPool = require("generic-pool");
 const now = require("performance-now");
 const puppeteer = require("puppeteer");
 const minimalcss = require("minimalcss");
+const prettier = require("prettier");
 const LRU = require("lru-cache");
 const got = require("got");
 const GracefulShutdownManager = require("@moebius/http-graceful-shutdown")
@@ -59,6 +60,7 @@ app.use(express.json());
 app.post("/minimize", async function (req, res) {
   const url = req.body.url;
   const preflight = !!(req.body.preflight || false);
+  const includePrettier = !!(req.body.prettier || false);
   let skippableUrlPatterns = req.body.skippable_url_patterns || null;
   res.set("Content-Type", "application/json");
   const cached = LRUCache.get(url);
@@ -144,20 +146,17 @@ app.post("/minimize", async function (req, res) {
 
         LRUCache.set(url, JSON.stringify({ result }));
         result._cache = "miss";
-        res.send(
-          JSON.stringify({
-            result,
-          })
-        );
+        if (includePrettier) {
+          result._prettier = prettier.format(result.finalCss, {
+            parser: "css",
+          });
+        }
+        res.json({ result });
       })
       .catch((error) => {
         console.error(`Failed the minimize CSS: ${error}`);
         res.status(500);
-        res.send(
-          JSON.stringify({
-            error: error.toString(),
-          })
-        );
+        res.json({ error: error.toString() });
       })
       .finally(() => {
         browserPool.release(browser);
