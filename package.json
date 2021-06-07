@@ -20,7 +20,7 @@
     "lru-cache": "6.0.0",
     "minimalcss": "0.11.2",
     "performance-now": "2.1.0",
-    "prettier": "2.2.1",
+    "prettier": "2.3.1",
     "response-time": "2.3.2"
   },
   "resolutions": {
