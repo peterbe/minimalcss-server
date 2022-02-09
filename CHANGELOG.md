@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.12.0
+
+* Upgraded lots of sub-dependencies.
+
 ## 0.9.0
 
 * Upgrade to `minimalcss@0.11.3`.
