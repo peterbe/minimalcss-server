@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 0.9.0
+
+* Upgrade to `minimalcss@0.11.3`.
+
+* Run CI tests in 16 but no longer in 10.
+
 ## 0.8.0
 
 * Upgrade to `minimalcss@0.11.2`.
