@@ -3510,10 +3510,10 @@ mimic-response@^3.1.0:
   resolved "https://registry.yarnpkg.com/mimic-response/-/mimic-response-3.1.0.tgz#2d1d59af9c1b129815accc2c46a022a5ce1fa3c9"
   integrity sha512-z0yWI+4FDrrweS8Zmt4Ej5HdJmky15+L2e6Wgn3+iK5fWzb6T3fhNFq2+MeTRb064c6Wr4N/wv0DzQTjNzHNGQ==
 
-minimalcss@0.11.2:
-  version "0.11.2"
-  resolved "https://registry.yarnpkg.com/minimalcss/-/minimalcss-0.11.2.tgz#c10490460c2c54cda094f8e34f79275070b8f0a6"
-  integrity sha512-Tc29sgszIY9UgZVFbQJ/iuveqEQTlslM2StN19ThBQySImJziw3yRPrgfI85tL5MJ2tzotQhCGAfyP+98q2dWA==
+minimalcss@0.11.3:
+  version "0.11.3"
+  resolved "https://registry.yarnpkg.com/minimalcss/-/minimalcss-0.11.3.tgz#4e8d0f210e16ca9fe6dba8e1be4a059374d460f8"
+  integrity sha512-l/nLdMEgv647c3kisejVFt6sMasDQYeESoRDWSlhdAGxP2+U8cDlrbv6KKccovqCKdAukaFLAezMgzeWNnqADQ==
   dependencies:
     cheerio "1.0.0-rc.3"
     css-tree "1.0.0-alpha.39"
