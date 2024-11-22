@@ -1,3 +1,7 @@
+**UPDATE** THIS PROJECT HAS BEEN DISCONTINUED
+
+
+
 # minimalcss-server
 
 [![NPM version](https://img.shields.io/npm/v/minimalcss-server.svg)](https://www.npmjs.com/package/minimalcss-server)
