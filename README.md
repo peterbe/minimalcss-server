@@ -1,8 +1,4 @@
-**UPDATE** THIS PROJECT HAS BEEN DISCONTINUED
-
-
-
-# minimalcss-server
+# **UPDATE** THIS PROJECT HAS BEEN DISCONTINUED
 
 [![NPM version](https://img.shields.io/npm/v/minimalcss-server.svg)](https://www.npmjs.com/package/minimalcss-server)
 ![Node.js CI](https://github.com/peterbe/minimalcss-server/workflows/Node.js%20CI/badge.svg)
